@@ -1,3 +1,4 @@
+# coding=utf-8
 #!/usr/bin/env python
 
 #
@@ -26,6 +27,9 @@ import md5
 import sys
 import os
 
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 API_KEY       = "e224418b91b4af4e8cdb0564716fa9bd"
 SHARED_SECRET = "7cddb9c9716501a0"
 
@@ -37,7 +41,7 @@ def getText(nodelist):
     for node in nodelist:
         if node.nodeType == node.TEXT_NODE:
             rc = rc + node.data
-    return rc.encode("utf-8")
+    return rc
 
 #
 # Get the frob based on our API_KEY and shared secret
@@ -186,13 +190,15 @@ def getphoto(id, token, filename):
         data = response.read()
     
         # Save the file!
-        fh = open(filename, "w")
+        fh = open(filename, "wb")
         fh.write(data)
         fh.close()
 
         return filename
     except:
         print "Failed to retrieve photo id " + id
+        sys.exit(1)
+
     
 ######## Main Application ##########
 if __name__ == '__main__':
@@ -238,8 +244,8 @@ if __name__ == '__main__':
     urls = []
     for set in sets:
         pid = set.getAttribute("id")
+
         dir = getText(set.getElementsByTagName("title")[0].childNodes)
-        dir = unicodedata.normalize('NFKD', dir.decode("utf-8", "ignore")).encode('ASCII', 'ignore') # Normalize to ASCII
 
         # Build the list of photos
         url   = "http://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos"
@@ -289,14 +295,16 @@ if __name__ == '__main__':
 
             # Grab the photos
             for photo in dom.getElementsByTagName("photo"):
-                # Tell the user we're grabbing the file
-                print photo.getAttribute("title").encode("utf8") + " ... in set ... " + dir
 
                 # Grab the id
                 photoid = photo.getAttribute("id")
 
                 # The target
+                dir = str(dir)
                 target = dir + "/" + photoid + ".jpg"
+
+                # Tell the user we're grabbing the file
+                print 'Downloading: ' + str(target.encode('cp949', 'ignore'))
 
                 # Skip files that exist
                 if os.access(target, os.R_OK):
