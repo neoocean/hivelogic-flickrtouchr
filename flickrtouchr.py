@@ -178,14 +178,18 @@ def getphoto(id, token, filename):
 
         # Grab the original if it exists
         if (sizes[-1].getAttribute("label") == "Original"):
-          imgurl = sizes[-1].getAttribute("source")
+            imgurl = sizes[-1].getAttribute("source")
         else:
-          print "Failed to get original for photo id " + id
-
+            print "Failed to get original for photo id " + id
+            sys.exit(1)
 
         # Free the DOM memory
         dom.unlink()
+    except:
+        print "Failed to retrieve photo id " + id
+        sys.exit(1)
 
+    try: 
         # Grab the image file
         response = urllib2.urlopen(imgurl)
         data = response.read()
@@ -197,7 +201,7 @@ def getphoto(id, token, filename):
 
         return filename
     except:
-        print "Failed to retrieve photo id " + id
+        print "Failed to save photo id " + id
         sys.exit(1)
 
     
