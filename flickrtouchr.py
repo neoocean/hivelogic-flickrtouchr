@@ -304,10 +304,10 @@ if __name__ == '__main__':
                 target = str(dir) + "/" + photoid + ".jpg"
 
                 # Tell the user we're grabbing the file
-                if platform.system() == 'Darwin':
-                    print 'Downloading: ' + str(target.encode('utf-8', 'ignore'))
-                elif platform.system() == 'Windows':
+                if platform.system() == 'Windows':
                     print 'Downloading: ' + str(target.encode('cp949', 'ignore'))
+                else:
+                    print 'Downloading: ' + str(target.encode('utf-8', 'ignore'))
 
                 # Skip files that exist
                 if os.access(target, os.R_OK):
